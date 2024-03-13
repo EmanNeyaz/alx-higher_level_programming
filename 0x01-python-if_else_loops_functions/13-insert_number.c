@@ -1,35 +1,72 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include "lists.h"
 
 /**
- * main - check the code for
- *
- * Return: Always 0.
+ * insert_node - insert a new node in a sorted linked list
+ * @head: the linked list
+ * @number: the new node to add
+ * Return: the new node
  */
-int main(void)
+listint_t *insert_node(listint_t **head, int number)
 {
-  listint_t *head;
+  listint_t *new, *next, *prev;
 
-  head = NULL;
-  add_nodeint_end(&head, 0);
-  add_nodeint_end(&head, 1);
-  add_nodeint_end(&head, 2);
-  add_nodeint_end(&head, 3);
-  add_nodeint_end(&head, 4);
-  add_nodeint_end(&head, 98);
-  add_nodeint_end(&head, 402);
-  add_nodeint_end(&head, 1024);
-  print_listint(head);
+  new = malloc(sizeof(listint_t));
+  new->n = number;
 
-  printf("-----------------\n");
+  if (!*head)
+    {
+      new->next = NULL;
+      *head = new;
+      return (new);
+    }
+  prev = *head;
+  next = prev ? prev->next : NULL;
 
-  insert_node(&head, 27);
+  if (!next)
+    {
+      if (prev && prev->n >= number)
+	{
+	  new->next = prev;
+	  *head = new;
+	}
+      else
+	{
+	  new->next = prev->next;
+	  prev->next = new;
+	}
+      return (new);
+    }
 
-  print_listint(head);
+  while (prev && next)
+    {
+      if (prev->n >= number)
+	{
+	  new->next = prev;
+	  *head = new;
+	  return (new);
+	}
+      if (prev->n <= number && next->n >= number)
+	{
+	  new->next = next;
+	  prev->next = new;
+	  return (new);
+	}
+      prev = next;
+      next = next->next;
 
-  free_listint(head);
-
-  return (0);
+      if (!next)
+	{
+	  if (prev->n >= number)
+	    new->next = prev;
+	  else
+	    {
+	      new->next = prev->next;
+	      prev->next = new;
+	    }
+	  return (new);
+	}
+    }
+  new->next = NULL;
+  *head = new;
+  return (new);
 }
