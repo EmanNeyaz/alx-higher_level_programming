@@ -1,1 +1,1 @@
-0x14-javascript-web_scraping
+javascript-web_scraping
